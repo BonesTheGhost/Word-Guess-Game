@@ -1,22 +1,26 @@
 /*Setting up the array for the computer choices and testing to make sure it works properly*/
+//Javascript href link test
 console.log("I'm working!");
 
+// ***** VARIABLES *****
 var computerChoices = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 var computerLetter = "";
 
 var playerKeyChoice = "";
 
 var numberOfTurns = 9;
+var turn = 0;
+var keyTest = false;
 
 var playerWins = 0;
 var playerLosses = 0;
 
+/*
+document.getElementById("winsArea").innerHTML += playerWins;
+document.getElementById("lossesArea").innerHTML += playerLosses;
+*/
 
-
-
-
-
-
+// ***** Computer chooses a letter *****
 function computerGeneration() {
     //Checking the computer array was made properly
     console.log("This is the data Array: ", computerChoices);
@@ -36,44 +40,79 @@ function computerGeneration() {
     var computerPick = computerChoices[computerRandomInt];
     console.log("The Associated letter is = ", computerPick);
 
-    return computerPick
+    computerLetter = computerPick;
 };
 
+function initializeScore() {
+    document.getElementById("winsArea").innerHTML = playerWins;
+    document.getElementById("lossesArea").innerHTML = playerLosses;
+}
 
+//Optional PlayerKeyTest
+function checkPlayerKey() {
+    keyTest = computerChoices.includes(playerKeyChoice);
+    console.log(keyTest);
+}
 
 
 //Run the computer choice generation for the first time.
-computerLetter = computerGeneration();
+computerGeneration();
+initializeScore();
 
-//Main Game for loop for the standard length of 9
-for (t = 0; t <= numberOfTurns + 2; t++) {
 
-    //Player entry
-    document.onkeyup = function logKey() {
-        var playerKeyChoice = event.key.toLowerCase();
-        console.log(playerKeyChoice);
-        //document.getElementById("outputArea").innerHTML = playerKeyChoice;
+
+
+//Player entry.
+document.onkeyup = function logKey() {
+    playerKeyChoice = event.key.toLowerCase();
+    console.log(playerKeyChoice);
+    document.getElementById("outputArea").innerHTML += playerKeyChoice;
+
+
+    checkPlayerKey();
+
+    if (keyTest) {
+        //Win Condition
+        if (playerKeyChoice === computerLetter) {
+            playerWins += 1;
+            turn = 1;
+
+            console.log("Win Recorded! : ", playerWins);
+
+            //Clearing the choice log
+            document.getElementById("outputArea").innerHTML = "";
+
+            //Update the wins area
+            document.getElementById("winsArea").innerHTML = playerWins;
+
+            //Re-run the random letter choice for the computer
+            computerGeneration();
+        }
+        else if (turn === numberOfTurns) {
+            playerLosses += 1;
+            turn = 1;
+
+            console.log("Loss Recorded! : ", playerLosses);
+
+            //Clearing the choice log
+            document.getElementById("outputArea").innerHTML = "";
+
+            //update the losses area
+            document.getElementById("lossesArea").innerHTML = playerLosses;
+
+            //Re-run the random letter choice for the computer
+            computerGeneration();
+        }
+        else {
+            turn += 1;
+        }
+    }
+    else {
+        alert("You must use letters; A - Z!");
     }
 
-    //Verify player entry
-    //Compare player entry
-    //  IF correct; generate another random number, update wins, set t back to 0, and begin again.
-    if (playerKeyChoice === computerPick) {
-        playerWins += 1;
-        t = 0;
+    console.log("Turn= ", turn);
 
-        console.log("Win Recorded! : ", playerWins);
 
-    }
-    //  IF no more guesses; generate another random number, update losses, set t back to 0, and begin again.
-    if (t === numberOfTurns -1 ) {
-        playerLosses += 1;
-        t = 0;
-
-        console.log("Loss Recorded! : ", playerLosses);
-
-    }
-
-    //Checking for turn counter to increment properly
-    console.log("Turn Counter 't' = ", t);
 }
+
